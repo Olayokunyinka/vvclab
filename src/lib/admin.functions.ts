@@ -42,12 +42,38 @@ export const getAdminUsers = createServerFn({ method: "POST" })
       .object({
         page: z.number().int().min(1).default(1),
         limit: z.number().int().min(1).max(100).default(20),
+        search: z.string().max(200).optional(),
+        statuses: z
+          .array(z.enum(["active", "suspended", "admin"]))
+          .max(3)
+          .optional(),
+        flags: z
+          .array(z.enum(["blueprint", "channel", "no_channel"]))
+          .max(3)
+          .optional(),
+        sortBy: z
+          .enum([
+            "created_at",
+            "email",
+            "full_name",
+            "last_sign_in_at",
+            "scripts",
+            "competitors",
+          ])
+          .default("created_at"),
+        sortDir: z.enum(["asc", "desc"]).default("desc"),
       })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
-    return getAllUsers(data.page, data.limit);
+    return getAllUsers(data.page, data.limit, {
+      search: data.search,
+      statuses: data.statuses,
+      flags: data.flags,
+      sortBy: data.sortBy,
+      sortDir: data.sortDir,
+    });
   });
 
 export const getAdminUserDetail = createServerFn({ method: "POST" })
@@ -111,6 +137,19 @@ export const getAiCallLog = createServerFn({ method: "POST" })
         to: z.string().optional(),
         userEmail: z.string().optional(),
         minCost: z.number().min(0).optional(),
+        maxCost: z.number().min(0).optional(),
+        minTokens: z.number().int().min(0).optional(),
+        sortBy: z
+          .enum([
+            "created_at",
+            "upstream_cost_usd",
+            "total_tokens",
+            "duration_ms",
+            "call_type",
+            "status",
+          ])
+          .default("created_at"),
+        sortDir: z.enum(["asc", "desc"]).default("desc"),
       })
       .parse(d),
   )
@@ -123,6 +162,10 @@ export const getAiCallLog = createServerFn({ method: "POST" })
       to: data.to,
       userEmail: data.userEmail,
       minCost: data.minCost,
+      maxCost: data.maxCost,
+      minTokens: data.minTokens,
+      sortBy: data.sortBy,
+      sortDir: data.sortDir,
     });
   });
 

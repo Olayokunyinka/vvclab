@@ -5,6 +5,18 @@ import { getAdminDashboardStats, getActivityLog } from "@/lib/admin.functions";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
 } from "recharts";
+import {
+  AdminCard,
+  AdminPageTitle,
+  AdminSectionHeader,
+  AdminStat,
+  AdminLinkButton,
+  AdminChip,
+  AdminEmpty,
+  CHART_AXIS,
+  CHART_GRID_STROKE,
+  CHART_TOOLTIP_STYLE,
+} from "@/components/admin/ui";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
@@ -20,107 +32,176 @@ const TYPE_COLORS: Record<string, string> = {
   pattern_analysis: "#ec4899",
 };
 
-function Stat({ label, value, sub, accent }: { label: string; value: any; sub?: string; accent?: "red" }) {
-  return (
-    <div className="rounded-lg border border-[#1a1a1a] bg-[#0d0d0d] p-4">
-      <div className="text-xs text-zinc-500">{label}</div>
-      <div className={`mt-1 text-2xl font-semibold ${accent === "red" ? "text-red-400" : "text-white"}`}>{value}</div>
-      {sub && <div className="text-xs text-zinc-500 mt-1">{sub}</div>}
-    </div>
-  );
-}
-
 function AdminDashboard() {
   const statsFn = useServerFn(getAdminDashboardStats);
   const activityFn = useServerFn(getActivityLog);
   const { data: s, isLoading } = useQuery({ queryKey: ["admin-stats"], queryFn: () => statsFn() });
-  const { data: act } = useQuery({ queryKey: ["admin-recent-activity"], queryFn: () => activityFn({ data: { page: 1, limit: 10 } }) });
+  const { data: act } = useQuery({ queryKey: ["admin-recent-activity"], queryFn: () => activityFn({ data: { page: 1, limit: 6 } }) });
 
-  if (isLoading || !s) return <div className="text-sm text-zinc-400">Loading…</div>;
+  if (isLoading || !s) {
+    return <div className="text-sm text-zinc-400">Loading dashboard…</div>;
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Stat label="Total Users" value={s.totalUsers} sub={`+${s.newUsersToday} today`} />
-        <Stat label="New This Week" value={s.newUsersThisWeek} />
-        <Stat label="Blueprints Generated" value={s.usersWithBlueprint} />
-        <Stat label="Channels Connected" value={s.usersWithChannel} />
-        <Stat label="Scripts Generated" value={s.totalScriptsGenerated} sub={`${s.scriptsThisMonth} this month`} />
-        <Stat label="LinkedIn Posts" value={s.totalLinkedInPosts} />
-        <Stat label="Total AI Calls" value={s.totalAiCalls} sub={`${s.aiCallsThisMonth} this month`} />
-        <Stat label="Failed AI Calls" value={s.failedCalls} accent={s.failedCalls > 0 ? "red" : undefined} />
-      </div>
+    <div className="space-y-8">
+      <AdminPageTitle
+        title="Dashboard"
+        description="A quick read on people, product adoption and AI usage."
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-lg border border-[#1a1a1a] bg-[#0d0d0d] p-4">
-          <div className="text-sm text-zinc-300 mb-3">New signups — last 30 days</div>
-          <div className="h-56">
+      {/* Hero KPIs */}
+      <section>
+        <AdminSectionHeader title="Headline" subtitle="The three numbers that matter most" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <AdminStat
+            size="hero"
+            label="Total users"
+            value={s.totalUsers.toLocaleString()}
+            sub={`+${s.newUsersToday} today · +${s.newUsersThisWeek} this week`}
+            accent="gold"
+          />
+          <AdminStat
+            size="hero"
+            label="AI calls (this month)"
+            value={(s.aiCallsThisMonth ?? 0).toLocaleString()}
+            sub={`${s.totalAiCalls.toLocaleString()} all time`}
+          />
+          <AdminStat
+            size="hero"
+            label="Failed AI calls"
+            value={s.failedCalls.toLocaleString()}
+            sub={s.failedCalls > 0 ? "needs attention" : "all clear"}
+            accent={s.failedCalls > 0 ? "red" : "emerald"}
+          />
+        </div>
+      </section>
+
+      {/* Charts */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <AdminCard>
+          <AdminSectionHeader
+            title="Signups"
+            subtitle="New users — last 30 days"
+          />
+          <div className="h-60 -mx-1">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={s.signupsByDay}>
-                <CartesianGrid stroke="#1a1a1a" />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#71717a" }} />
-                <YAxis tick={{ fontSize: 10, fill: "#71717a" }} allowDecimals={false} />
-                <Tooltip contentStyle={{ background: "#0d0d0d", border: "1px solid #1a1a1a" }} />
+              <LineChart data={s.signupsByDay} margin={{ top: 4, right: 6, left: -8, bottom: 0 }}>
+                <CartesianGrid stroke={CHART_GRID_STROKE} vertical={false} />
+                <XAxis dataKey="date" tick={CHART_AXIS} tickLine={false} axisLine={{ stroke: CHART_GRID_STROKE }} />
+                <YAxis tick={CHART_AXIS} tickLine={false} axisLine={false} allowDecimals={false} />
+                <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                 <Line type="monotone" dataKey="count" stroke="#e53e3e" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
-        </div>
-        <div className="rounded-lg border border-[#1a1a1a] bg-[#0d0d0d] p-4">
-          <div className="text-sm text-zinc-300 mb-3">AI calls by type — last 7 days</div>
-          <div className="h-56">
+        </AdminCard>
+
+        <AdminCard>
+          <AdminSectionHeader
+            title="AI usage by type"
+            subtitle="Last 7 days"
+          />
+          <div className="h-60 -mx-1">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={s.aiCallsByDayByType}>
-                <CartesianGrid stroke="#1a1a1a" />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#71717a" }} />
-                <YAxis tick={{ fontSize: 10, fill: "#71717a" }} allowDecimals={false} />
-                <Tooltip contentStyle={{ background: "#0d0d0d", border: "1px solid #1a1a1a" }} />
-                <Legend wrapperStyle={{ fontSize: 10 }} />
+              <BarChart data={s.aiCallsByDayByType} margin={{ top: 4, right: 6, left: -8, bottom: 0 }}>
+                <CartesianGrid stroke={CHART_GRID_STROKE} vertical={false} />
+                <XAxis dataKey="date" tick={CHART_AXIS} tickLine={false} axisLine={{ stroke: CHART_GRID_STROKE }} />
+                <YAxis tick={CHART_AXIS} tickLine={false} axisLine={false} allowDecimals={false} />
+                <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
+                <Legend wrapperStyle={{ fontSize: 10 }} iconSize={8} />
                 {CALL_TYPES.map((t) => (
-                  <Bar key={t} dataKey={t} stackId="a" fill={TYPE_COLORS[t]} />
+                  <Bar key={t} dataKey={t} stackId="a" fill={TYPE_COLORS[t]} radius={[2, 2, 0, 0]} />
                 ))}
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
-      </div>
+        </AdminCard>
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-lg border border-[#1a1a1a] bg-[#0d0d0d] p-4">
-          <div className="text-sm text-zinc-300 mb-3">Most tracked competitor channels</div>
+      {/* Product adoption */}
+      <section>
+        <AdminSectionHeader
+          title="Product adoption"
+          subtitle="Cumulative usage across the core tools"
+        />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <AdminStat label="Blueprints generated" value={s.usersWithBlueprint.toLocaleString()} />
+          <AdminStat label="Channels connected" value={s.usersWithChannel.toLocaleString()} />
+          <AdminStat
+            label="Scripts generated"
+            value={s.totalScriptsGenerated.toLocaleString()}
+            sub={`${s.scriptsThisMonth} this month`}
+          />
+          <AdminStat label="LinkedIn posts" value={s.totalLinkedInPosts.toLocaleString()} />
+        </div>
+      </section>
+
+      {/* Lists */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <AdminCard>
+          <AdminSectionHeader title="Most tracked competitor channels" />
           {s.mostTrackedChannels.length === 0 ? (
-            <div className="text-xs text-zinc-500">No competitors tracked yet</div>
+            <AdminEmpty>No competitors tracked yet.</AdminEmpty>
           ) : (
             <ul className="space-y-2">
-              {s.mostTrackedChannels.map((c: any) => (
-                <li key={c.title} className="flex justify-between text-sm">
-                  <span className="text-zinc-200">{c.title}</span>
-                  <span className="text-zinc-500">{c.count} users</span>
+              {s.mostTrackedChannels.slice(0, 6).map((c: any, i: number) => {
+                const max = s.mostTrackedChannels[0]?.count || 1;
+                const pct = Math.max(6, Math.round((c.count / max) * 100));
+                return (
+                  <li key={c.title + i} className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-zinc-200 truncate pr-3">{c.title}</span>
+                      <span className="text-zinc-500 tabular-nums shrink-0">
+                        {c.count} users
+                      </span>
+                    </div>
+                    <div className="h-1 rounded-full bg-[#161616] overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${pct}%`,
+                          background: "linear-gradient(90deg, #e53e3e, #c9a84c)",
+                        }}
+                      />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </AdminCard>
+
+        <AdminCard>
+          <AdminSectionHeader
+            title="Recent admin activity"
+            action={<AdminLinkButton to="/admin/activity">View all</AdminLinkButton>}
+          />
+          {!act || act.rows.length === 0 ? (
+            <AdminEmpty>No activity yet.</AdminEmpty>
+          ) : (
+            <ul className="divide-y divide-[#161616] -mx-1">
+              {act.rows.slice(0, 6).map((r: any) => (
+                <li key={r.id} className="flex items-center justify-between gap-3 py-2.5 px-1">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <AdminChip tone="gold">{r.action}</AdminChip>
+                    <span className="text-sm text-zinc-300 truncate">
+                      {r.targetEmail || "—"}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-zinc-500 shrink-0 tabular-nums">
+                    {new Date(r.created_at).toLocaleString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
                 </li>
               ))}
             </ul>
           )}
-        </div>
-        <div className="rounded-lg border border-[#1a1a1a] bg-[#0d0d0d] p-4">
-          <div className="text-sm text-zinc-300 mb-3">Recent admin activity</div>
-          {!act || act.rows.length === 0 ? (
-            <div className="text-xs text-zinc-500">No activity yet</div>
-          ) : (
-            <table className="w-full text-xs">
-              <tbody>
-                {act.rows.map((r: any) => (
-                  <tr key={r.id} className="border-t border-[#1a1a1a]">
-                    <td className="py-2 text-zinc-300">{r.action}</td>
-                    <td className="py-2 text-zinc-400">{r.targetEmail || "—"}</td>
-                    <td className="py-2 text-zinc-500">{r.adminEmail}</td>
-                    <td className="py-2 text-zinc-500 text-right">{new Date(r.created_at).toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      </div>
+        </AdminCard>
+      </section>
     </div>
   );
 }

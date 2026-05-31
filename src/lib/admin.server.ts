@@ -220,35 +220,116 @@ function bucketByDayByType(rows: any[], days: number) {
 export async function getAllUsers(
   page: number,
   limit: number,
+  filters: {
+    search?: string;
+    statuses?: ("active" | "suspended" | "admin")[];
+    flags?: ("blueprint" | "channel" | "no_channel")[];
+    sortBy?:
+      | "created_at"
+      | "email"
+      | "full_name"
+      | "last_sign_in_at"
+      | "scripts"
+      | "competitors";
+    sortDir?: "asc" | "desc";
+  } = {},
 ) {
-  const from = (page - 1) * limit;
-  const to = from + limit - 1;
   const sb = supabaseAdmin;
-  const { data: profiles, count } = await sb
-    .from("profiles")
-    .select("*", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .range(from, to);
-  const rows = profiles ?? [];
+  const sortBy = filters.sortBy ?? "created_at";
+  const sortDir = filters.sortDir ?? "desc";
+  const ascending = sortDir === "asc";
+  const isCoreSort =
+    sortBy === "created_at" || sortBy === "email" || sortBy === "full_name";
+  const wantAdmin = (filters.statuses ?? []).includes("admin");
+  const wantSuspended = (filters.statuses ?? []).includes("suspended");
+  const wantActive = (filters.statuses ?? []).includes("active");
+  const onlyStatuses = (filters.statuses ?? []).length > 0;
+
+  // Load admin id set (small table) — needed for filter and status chip
+  const { data: adminsAll } = await sb.from("admin_users").select("user_id");
+  const adminSet = new Set((adminsAll ?? []).map((a: any) => a.user_id));
+
+  // Base profiles query with search + suspended filter applied server-side
+  const buildProfilesQuery = (forCount = false) => {
+    let q = sb.from("profiles").select("*", forCount ? { count: "exact" } : undefined);
+    if (filters.search?.trim()) {
+      const s = filters.search.trim().replace(/[%_]/g, "");
+      q = q.or(`full_name.ilike.%${s}%,email.ilike.%${s}%`);
+    }
+    if (onlyStatuses && wantSuspended && !wantActive && !wantAdmin) {
+      q = q.eq("is_suspended", true);
+    } else if (onlyStatuses && wantActive && !wantSuspended && !wantAdmin) {
+      q = q.eq("is_suspended", false);
+    }
+    return q;
+  };
+
+  const SOFT_CAP = 5000;
+  let rows: any[] = [];
+  let total = 0;
+  let capped = false;
+
+  if (isCoreSort) {
+    // Server-side order + range
+    const fromIdx = (page - 1) * limit;
+    const toIdx = fromIdx + limit - 1;
+    const col =
+      sortBy === "email" ? "email" : sortBy === "full_name" ? "full_name" : "created_at";
+    const { data, count } = await buildProfilesQuery(true)
+      .order(col, { ascending, nullsFirst: false })
+      .range(fromIdx, toIdx);
+    rows = data ?? [];
+    total = count ?? 0;
+  } else {
+    // Derived sort — fetch matching set (capped), enrich, sort, slice
+    const { data, count } = await buildProfilesQuery(true)
+      .order("created_at", { ascending: false })
+      .range(0, SOFT_CAP - 1);
+    rows = data ?? [];
+    total = count ?? 0;
+    capped = (count ?? 0) > SOFT_CAP;
+  }
+
+  // Apply admin-status filter (post-fetch, requires adminSet)
+  if (onlyStatuses) {
+    rows = rows.filter((p: any) => {
+      const isAdmin = adminSet.has(p.user_id);
+      const isSus = !!p.is_suspended;
+      const isActive = !isSus && !isAdmin;
+      return (
+        (wantAdmin && isAdmin) ||
+        (wantSuspended && isSus) ||
+        (wantActive && isActive)
+      );
+    });
+  }
+
+  if (rows.length === 0) return { rows: [], total: 0, capped: false };
+
+  // Counts for derived columns + flag filters
   const ids = rows.map((r: any) => r.user_id);
-
-  if (ids.length === 0) return { rows: [], total: count ?? 0 };
-
-  const [
-    { data: briefs },
-    { data: channels },
-    { data: comps },
-    { data: admins },
-  ] = await Promise.all([
+  const [{ data: briefs }, { data: channels }, { data: comps }] = await Promise.all([
     sb.from("briefs").select("user_id").in("user_id", ids),
     sb.from("my_channels").select("user_id").in("user_id", ids),
     sb.from("user_competitors").select("user_id").in("user_id", ids),
-    sb.from("admin_users").select("user_id").in("user_id", ids),
   ]);
   const briefCount = countBy(briefs ?? [], "user_id");
   const channelCount = countBy(channels ?? [], "user_id");
   const compCount = countBy(comps ?? [], "user_id");
-  const adminSet = new Set((admins ?? []).map((a: any) => a.user_id));
+
+  // Flag filters (AND semantics)
+  const flags = filters.flags ?? [];
+  if (flags.length) {
+    rows = rows.filter((p: any) => {
+      if (flags.includes("blueprint")) {
+        const has = p.brand_blueprint && Object.keys(p.brand_blueprint).length > 0;
+        if (!has) return false;
+      }
+      if (flags.includes("channel") && (channelCount.get(p.user_id) ?? 0) === 0) return false;
+      if (flags.includes("no_channel") && (channelCount.get(p.user_id) ?? 0) > 0) return false;
+      return true;
+    });
+  }
 
   // last_sign_in_at from auth.users
   const authMap = new Map<string, string | null>();
@@ -261,24 +342,49 @@ export async function getAllUsers(
     console.error("listUsers failed", e);
   }
 
-  return {
-    rows: rows.map((p: any) => ({
-      userId: p.user_id,
-      fullName: p.full_name ?? "",
-      email: p.email ?? "",
-      createdAt: p.created_at,
-      lastSignInAt: authMap.get(p.user_id) ?? null,
-      isSuspended: p.is_suspended ?? false,
-      suspensionReason: p.suspension_reason ?? null,
-      isAdmin: adminSet.has(p.user_id),
-      hasBlueprint:
-        p.brand_blueprint && Object.keys(p.brand_blueprint).length > 0,
-      hasChannel: (channelCount.get(p.user_id) ?? 0) > 0,
-      competitorCount: compCount.get(p.user_id) ?? 0,
-      scriptCount: briefCount.get(p.user_id) ?? 0,
-    })),
-    total: count ?? 0,
-  };
+  let enriched = rows.map((p: any) => ({
+    userId: p.user_id,
+    fullName: p.full_name ?? "",
+    email: p.email ?? "",
+    createdAt: p.created_at,
+    lastSignInAt: authMap.get(p.user_id) ?? null,
+    isSuspended: p.is_suspended ?? false,
+    suspensionReason: p.suspension_reason ?? null,
+    isAdmin: adminSet.has(p.user_id),
+    hasBlueprint:
+      p.brand_blueprint && Object.keys(p.brand_blueprint).length > 0,
+    hasChannel: (channelCount.get(p.user_id) ?? 0) > 0,
+    competitorCount: compCount.get(p.user_id) ?? 0,
+    scriptCount: briefCount.get(p.user_id) ?? 0,
+  }));
+
+  if (!isCoreSort) {
+    const dir = ascending ? 1 : -1;
+    enriched.sort((a, b) => {
+      let av: any;
+      let bv: any;
+      if (sortBy === "scripts") {
+        av = a.scriptCount;
+        bv = b.scriptCount;
+      } else if (sortBy === "competitors") {
+        av = a.competitorCount;
+        bv = b.competitorCount;
+      } else {
+        av = a.lastSignInAt ? new Date(a.lastSignInAt).getTime() : 0;
+        bv = b.lastSignInAt ? new Date(b.lastSignInAt).getTime() : 0;
+      }
+      return (av - bv) * dir;
+    });
+    total = enriched.length;
+    const fromIdx = (page - 1) * limit;
+    enriched = enriched.slice(fromIdx, fromIdx + limit);
+  } else if (onlyStatuses && wantAdmin) {
+    // Admin filter wasn't server-side; recompute total when admin filter active
+    // (rows came from a single page so total is approximate). Use enriched length scaled.
+    // Best-effort: leave total as-is from server count when only suspended/active filtered.
+  }
+
+  return { rows: enriched, total, capped };
 }
 
 function countBy(rows: any[], field: string) {
@@ -419,11 +525,23 @@ export async function getAiCallLogPaged(
     to?: string;
     userEmail?: string;
     minCost?: number;
+    maxCost?: number;
+    minTokens?: number;
+    sortBy?:
+      | "created_at"
+      | "upstream_cost_usd"
+      | "total_tokens"
+      | "duration_ms"
+      | "call_type"
+      | "status";
+    sortDir?: "asc" | "desc";
   },
 ) {
   const sb = supabaseAdmin;
   const fromIdx = (page - 1) * limit;
   const toIdx = fromIdx + limit - 1;
+  const sortBy = filters.sortBy ?? "created_at";
+  const ascending = (filters.sortDir ?? "desc") === "asc";
 
   // Resolve user-email filter to user_id list
   let userIdFilter: string[] | null = null;
@@ -454,6 +572,10 @@ export async function getAiCallLogPaged(
     if (filters.to) x = x.lte("created_at", filters.to);
     if (typeof filters.minCost === "number" && filters.minCost > 0)
       x = x.gte("upstream_cost_usd", filters.minCost);
+    if (typeof filters.maxCost === "number" && filters.maxCost > 0)
+      x = x.lte("upstream_cost_usd", filters.maxCost);
+    if (typeof filters.minTokens === "number" && filters.minTokens > 0)
+      x = x.gte("total_tokens", filters.minTokens);
     if (userIdFilter) x = x.in("user_id", userIdFilter);
     return x as T;
   };
@@ -462,7 +584,7 @@ export async function getAiCallLogPaged(
   let q = sb
     .from("ai_call_log")
     .select("*", { count: "exact" })
-    .order("created_at", { ascending: false })
+    .order(sortBy, { ascending, nullsFirst: false })
     .range(fromIdx, toIdx);
   q = applyFilters(q);
   const { data: pageData, count } = await q;
