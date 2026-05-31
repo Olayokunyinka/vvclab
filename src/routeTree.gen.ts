@@ -9,38 +9,537 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SuspendedRouteImport } from './routes/suspended'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as LinkedinEngineRouteImport } from './routes/linkedin-engine'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as ContentStudioRouteImport } from './routes/content-studio'
+import { Route as ContentAnalysisRouteImport } from './routes/content-analysis'
+import { Route as BlueprintRouteImport } from './routes/blueprint'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSystemRouteImport } from './routes/admin.system'
+import { Route as AdminAiCallsRouteImport } from './routes/admin.ai-calls'
+import { Route as AdminActivityRouteImport } from './routes/admin.activity'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedOnboardedRouteImport } from './routes/_authenticated/_onboarded'
+import { Route as AuthenticatedOnboardedTodayRouteImport } from './routes/_authenticated/_onboarded/today'
+import { Route as AuthenticatedOnboardedSettingsRouteImport } from './routes/_authenticated/_onboarded/settings'
+import { Route as AuthenticatedOnboardedPersonalizeRouteImport } from './routes/_authenticated/_onboarded/personalize'
+import { Route as AuthenticatedOnboardedOutliersRouteImport } from './routes/_authenticated/_onboarded/outliers'
+import { Route as AuthenticatedOnboardedNotificationsRouteImport } from './routes/_authenticated/_onboarded/notifications'
+import { Route as AuthenticatedOnboardedLinkedinRouteImport } from './routes/_authenticated/_onboarded/linkedin'
+import { Route as AuthenticatedOnboardedCompetitorsRouteImport } from './routes/_authenticated/_onboarded/competitors'
+import { Route as AuthenticatedOnboardedCalendarRouteImport } from './routes/_authenticated/_onboarded/calendar'
+import { Route as AuthenticatedOnboardedBriefsRouteImport } from './routes/_authenticated/_onboarded/briefs'
+import { Route as AuthenticatedOnboardedBrandRouteImport } from './routes/_authenticated/_onboarded/brand'
+import { Route as AuthenticatedOnboardedLinkedinRunIdRouteImport } from './routes/_authenticated/_onboarded/linkedin.$runId'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuspendedRoute = SuspendedRouteImport.update({
+  id: '/suspended',
+  path: '/suspended',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LinkedinEngineRoute = LinkedinEngineRouteImport.update({
+  id: '/linkedin-engine',
+  path: '/linkedin-engine',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContentStudioRoute = ContentStudioRouteImport.update({
+  id: '/content-studio',
+  path: '/content-studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContentAnalysisRoute = ContentAnalysisRouteImport.update({
+  id: '/content-analysis',
+  path: '/content-analysis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlueprintRoute = BlueprintRouteImport.update({
+  id: '/blueprint',
+  path: '/blueprint',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSystemRoute = AdminSystemRouteImport.update({
+  id: '/system',
+  path: '/system',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAiCallsRoute = AdminAiCallsRouteImport.update({
+  id: '/ai-calls',
+  path: '/ai-calls',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminActivityRoute = AdminActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedOnboardedRoute = AuthenticatedOnboardedRouteImport.update({
+  id: '/_onboarded',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedOnboardedTodayRoute =
+  AuthenticatedOnboardedTodayRouteImport.update({
+    id: '/today',
+    path: '/today',
+    getParentRoute: () => AuthenticatedOnboardedRoute,
+  } as any)
+const AuthenticatedOnboardedSettingsRoute =
+  AuthenticatedOnboardedSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedOnboardedRoute,
+  } as any)
+const AuthenticatedOnboardedPersonalizeRoute =
+  AuthenticatedOnboardedPersonalizeRouteImport.update({
+    id: '/personalize',
+    path: '/personalize',
+    getParentRoute: () => AuthenticatedOnboardedRoute,
+  } as any)
+const AuthenticatedOnboardedOutliersRoute =
+  AuthenticatedOnboardedOutliersRouteImport.update({
+    id: '/outliers',
+    path: '/outliers',
+    getParentRoute: () => AuthenticatedOnboardedRoute,
+  } as any)
+const AuthenticatedOnboardedNotificationsRoute =
+  AuthenticatedOnboardedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedOnboardedRoute,
+  } as any)
+const AuthenticatedOnboardedLinkedinRoute =
+  AuthenticatedOnboardedLinkedinRouteImport.update({
+    id: '/linkedin',
+    path: '/linkedin',
+    getParentRoute: () => AuthenticatedOnboardedRoute,
+  } as any)
+const AuthenticatedOnboardedCompetitorsRoute =
+  AuthenticatedOnboardedCompetitorsRouteImport.update({
+    id: '/competitors',
+    path: '/competitors',
+    getParentRoute: () => AuthenticatedOnboardedRoute,
+  } as any)
+const AuthenticatedOnboardedCalendarRoute =
+  AuthenticatedOnboardedCalendarRouteImport.update({
+    id: '/calendar',
+    path: '/calendar',
+    getParentRoute: () => AuthenticatedOnboardedRoute,
+  } as any)
+const AuthenticatedOnboardedBriefsRoute =
+  AuthenticatedOnboardedBriefsRouteImport.update({
+    id: '/briefs',
+    path: '/briefs',
+    getParentRoute: () => AuthenticatedOnboardedRoute,
+  } as any)
+const AuthenticatedOnboardedBrandRoute =
+  AuthenticatedOnboardedBrandRouteImport.update({
+    id: '/brand',
+    path: '/brand',
+    getParentRoute: () => AuthenticatedOnboardedRoute,
+  } as any)
+const AuthenticatedOnboardedLinkedinRunIdRoute =
+  AuthenticatedOnboardedLinkedinRunIdRouteImport.update({
+    id: '/$runId',
+    path: '/$runId',
+    getParentRoute: () => AuthenticatedOnboardedLinkedinRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/blueprint': typeof BlueprintRoute
+  '/content-analysis': typeof ContentAnalysisRoute
+  '/content-studio': typeof ContentStudioRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/linkedin-engine': typeof LinkedinEngineRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
+  '/suspended': typeof SuspendedRoute
+  '/terms': typeof TermsRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/admin/activity': typeof AdminActivityRoute
+  '/admin/ai-calls': typeof AdminAiCallsRoute
+  '/admin/system': typeof AdminSystemRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/': typeof AdminIndexRoute
+  '/brand': typeof AuthenticatedOnboardedBrandRoute
+  '/briefs': typeof AuthenticatedOnboardedBriefsRoute
+  '/calendar': typeof AuthenticatedOnboardedCalendarRoute
+  '/competitors': typeof AuthenticatedOnboardedCompetitorsRoute
+  '/linkedin': typeof AuthenticatedOnboardedLinkedinRouteWithChildren
+  '/notifications': typeof AuthenticatedOnboardedNotificationsRoute
+  '/outliers': typeof AuthenticatedOnboardedOutliersRoute
+  '/personalize': typeof AuthenticatedOnboardedPersonalizeRoute
+  '/settings': typeof AuthenticatedOnboardedSettingsRoute
+  '/today': typeof AuthenticatedOnboardedTodayRoute
+  '/linkedin/$runId': typeof AuthenticatedOnboardedLinkedinRunIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/blueprint': typeof BlueprintRoute
+  '/content-analysis': typeof ContentAnalysisRoute
+  '/content-studio': typeof ContentStudioRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/linkedin-engine': typeof LinkedinEngineRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
+  '/suspended': typeof SuspendedRoute
+  '/terms': typeof TermsRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/admin/activity': typeof AdminActivityRoute
+  '/admin/ai-calls': typeof AdminAiCallsRoute
+  '/admin/system': typeof AdminSystemRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin': typeof AdminIndexRoute
+  '/brand': typeof AuthenticatedOnboardedBrandRoute
+  '/briefs': typeof AuthenticatedOnboardedBriefsRoute
+  '/calendar': typeof AuthenticatedOnboardedCalendarRoute
+  '/competitors': typeof AuthenticatedOnboardedCompetitorsRoute
+  '/linkedin': typeof AuthenticatedOnboardedLinkedinRouteWithChildren
+  '/notifications': typeof AuthenticatedOnboardedNotificationsRoute
+  '/outliers': typeof AuthenticatedOnboardedOutliersRoute
+  '/personalize': typeof AuthenticatedOnboardedPersonalizeRoute
+  '/settings': typeof AuthenticatedOnboardedSettingsRoute
+  '/today': typeof AuthenticatedOnboardedTodayRoute
+  '/linkedin/$runId': typeof AuthenticatedOnboardedLinkedinRunIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/blueprint': typeof BlueprintRoute
+  '/content-analysis': typeof ContentAnalysisRoute
+  '/content-studio': typeof ContentStudioRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/linkedin-engine': typeof LinkedinEngineRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
+  '/suspended': typeof SuspendedRoute
+  '/terms': typeof TermsRoute
+  '/_authenticated/_onboarded': typeof AuthenticatedOnboardedRouteWithChildren
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/admin/activity': typeof AdminActivityRoute
+  '/admin/ai-calls': typeof AdminAiCallsRoute
+  '/admin/system': typeof AdminSystemRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/': typeof AdminIndexRoute
+  '/_authenticated/_onboarded/brand': typeof AuthenticatedOnboardedBrandRoute
+  '/_authenticated/_onboarded/briefs': typeof AuthenticatedOnboardedBriefsRoute
+  '/_authenticated/_onboarded/calendar': typeof AuthenticatedOnboardedCalendarRoute
+  '/_authenticated/_onboarded/competitors': typeof AuthenticatedOnboardedCompetitorsRoute
+  '/_authenticated/_onboarded/linkedin': typeof AuthenticatedOnboardedLinkedinRouteWithChildren
+  '/_authenticated/_onboarded/notifications': typeof AuthenticatedOnboardedNotificationsRoute
+  '/_authenticated/_onboarded/outliers': typeof AuthenticatedOnboardedOutliersRoute
+  '/_authenticated/_onboarded/personalize': typeof AuthenticatedOnboardedPersonalizeRoute
+  '/_authenticated/_onboarded/settings': typeof AuthenticatedOnboardedSettingsRoute
+  '/_authenticated/_onboarded/today': typeof AuthenticatedOnboardedTodayRoute
+  '/_authenticated/_onboarded/linkedin/$runId': typeof AuthenticatedOnboardedLinkedinRunIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/blueprint'
+    | '/content-analysis'
+    | '/content-studio'
+    | '/forgot-password'
+    | '/linkedin-engine'
+    | '/login'
+    | '/pricing'
+    | '/privacy'
+    | '/reset-password'
+    | '/signup'
+    | '/suspended'
+    | '/terms'
+    | '/onboarding'
+    | '/admin/activity'
+    | '/admin/ai-calls'
+    | '/admin/system'
+    | '/admin/users'
+    | '/admin/'
+    | '/brand'
+    | '/briefs'
+    | '/calendar'
+    | '/competitors'
+    | '/linkedin'
+    | '/notifications'
+    | '/outliers'
+    | '/personalize'
+    | '/settings'
+    | '/today'
+    | '/linkedin/$runId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/blueprint'
+    | '/content-analysis'
+    | '/content-studio'
+    | '/forgot-password'
+    | '/linkedin-engine'
+    | '/login'
+    | '/pricing'
+    | '/privacy'
+    | '/reset-password'
+    | '/signup'
+    | '/suspended'
+    | '/terms'
+    | '/onboarding'
+    | '/admin/activity'
+    | '/admin/ai-calls'
+    | '/admin/system'
+    | '/admin/users'
+    | '/admin'
+    | '/brand'
+    | '/briefs'
+    | '/calendar'
+    | '/competitors'
+    | '/linkedin'
+    | '/notifications'
+    | '/outliers'
+    | '/personalize'
+    | '/settings'
+    | '/today'
+    | '/linkedin/$runId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/admin'
+    | '/blueprint'
+    | '/content-analysis'
+    | '/content-studio'
+    | '/forgot-password'
+    | '/linkedin-engine'
+    | '/login'
+    | '/pricing'
+    | '/privacy'
+    | '/reset-password'
+    | '/signup'
+    | '/suspended'
+    | '/terms'
+    | '/_authenticated/_onboarded'
+    | '/_authenticated/onboarding'
+    | '/admin/activity'
+    | '/admin/ai-calls'
+    | '/admin/system'
+    | '/admin/users'
+    | '/admin/'
+    | '/_authenticated/_onboarded/brand'
+    | '/_authenticated/_onboarded/briefs'
+    | '/_authenticated/_onboarded/calendar'
+    | '/_authenticated/_onboarded/competitors'
+    | '/_authenticated/_onboarded/linkedin'
+    | '/_authenticated/_onboarded/notifications'
+    | '/_authenticated/_onboarded/outliers'
+    | '/_authenticated/_onboarded/personalize'
+    | '/_authenticated/_onboarded/settings'
+    | '/_authenticated/_onboarded/today'
+    | '/_authenticated/_onboarded/linkedin/$runId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
+  BlueprintRoute: typeof BlueprintRoute
+  ContentAnalysisRoute: typeof ContentAnalysisRoute
+  ContentStudioRoute: typeof ContentStudioRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LinkedinEngineRoute: typeof LinkedinEngineRoute
+  LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SignupRoute: typeof SignupRoute
+  SuspendedRoute: typeof SuspendedRoute
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suspended': {
+      id: '/suspended'
+      path: '/suspended'
+      fullPath: '/suspended'
+      preLoaderRoute: typeof SuspendedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/linkedin-engine': {
+      id: '/linkedin-engine'
+      path: '/linkedin-engine'
+      fullPath: '/linkedin-engine'
+      preLoaderRoute: typeof LinkedinEngineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/content-studio': {
+      id: '/content-studio'
+      path: '/content-studio'
+      fullPath: '/content-studio'
+      preLoaderRoute: typeof ContentStudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/content-analysis': {
+      id: '/content-analysis'
+      path: '/content-analysis'
+      fullPath: '/content-analysis'
+      preLoaderRoute: typeof ContentAnalysisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blueprint': {
+      id: '/blueprint'
+      path: '/blueprint'
+      fullPath: '/blueprint'
+      preLoaderRoute: typeof BlueprintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +547,234 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/system': {
+      id: '/admin/system'
+      path: '/system'
+      fullPath: '/admin/system'
+      preLoaderRoute: typeof AdminSystemRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/ai-calls': {
+      id: '/admin/ai-calls'
+      path: '/ai-calls'
+      fullPath: '/admin/ai-calls'
+      preLoaderRoute: typeof AdminAiCallsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/activity': {
+      id: '/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminActivityRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/_onboarded': {
+      id: '/_authenticated/_onboarded'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedOnboardedRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/_onboarded/today': {
+      id: '/_authenticated/_onboarded/today'
+      path: '/today'
+      fullPath: '/today'
+      preLoaderRoute: typeof AuthenticatedOnboardedTodayRouteImport
+      parentRoute: typeof AuthenticatedOnboardedRoute
+    }
+    '/_authenticated/_onboarded/settings': {
+      id: '/_authenticated/_onboarded/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedOnboardedSettingsRouteImport
+      parentRoute: typeof AuthenticatedOnboardedRoute
+    }
+    '/_authenticated/_onboarded/personalize': {
+      id: '/_authenticated/_onboarded/personalize'
+      path: '/personalize'
+      fullPath: '/personalize'
+      preLoaderRoute: typeof AuthenticatedOnboardedPersonalizeRouteImport
+      parentRoute: typeof AuthenticatedOnboardedRoute
+    }
+    '/_authenticated/_onboarded/outliers': {
+      id: '/_authenticated/_onboarded/outliers'
+      path: '/outliers'
+      fullPath: '/outliers'
+      preLoaderRoute: typeof AuthenticatedOnboardedOutliersRouteImport
+      parentRoute: typeof AuthenticatedOnboardedRoute
+    }
+    '/_authenticated/_onboarded/notifications': {
+      id: '/_authenticated/_onboarded/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedOnboardedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedOnboardedRoute
+    }
+    '/_authenticated/_onboarded/linkedin': {
+      id: '/_authenticated/_onboarded/linkedin'
+      path: '/linkedin'
+      fullPath: '/linkedin'
+      preLoaderRoute: typeof AuthenticatedOnboardedLinkedinRouteImport
+      parentRoute: typeof AuthenticatedOnboardedRoute
+    }
+    '/_authenticated/_onboarded/competitors': {
+      id: '/_authenticated/_onboarded/competitors'
+      path: '/competitors'
+      fullPath: '/competitors'
+      preLoaderRoute: typeof AuthenticatedOnboardedCompetitorsRouteImport
+      parentRoute: typeof AuthenticatedOnboardedRoute
+    }
+    '/_authenticated/_onboarded/calendar': {
+      id: '/_authenticated/_onboarded/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof AuthenticatedOnboardedCalendarRouteImport
+      parentRoute: typeof AuthenticatedOnboardedRoute
+    }
+    '/_authenticated/_onboarded/briefs': {
+      id: '/_authenticated/_onboarded/briefs'
+      path: '/briefs'
+      fullPath: '/briefs'
+      preLoaderRoute: typeof AuthenticatedOnboardedBriefsRouteImport
+      parentRoute: typeof AuthenticatedOnboardedRoute
+    }
+    '/_authenticated/_onboarded/brand': {
+      id: '/_authenticated/_onboarded/brand'
+      path: '/brand'
+      fullPath: '/brand'
+      preLoaderRoute: typeof AuthenticatedOnboardedBrandRouteImport
+      parentRoute: typeof AuthenticatedOnboardedRoute
+    }
+    '/_authenticated/_onboarded/linkedin/$runId': {
+      id: '/_authenticated/_onboarded/linkedin/$runId'
+      path: '/$runId'
+      fullPath: '/linkedin/$runId'
+      preLoaderRoute: typeof AuthenticatedOnboardedLinkedinRunIdRouteImport
+      parentRoute: typeof AuthenticatedOnboardedLinkedinRoute
+    }
   }
 }
 
+interface AuthenticatedOnboardedLinkedinRouteChildren {
+  AuthenticatedOnboardedLinkedinRunIdRoute: typeof AuthenticatedOnboardedLinkedinRunIdRoute
+}
+
+const AuthenticatedOnboardedLinkedinRouteChildren: AuthenticatedOnboardedLinkedinRouteChildren =
+  {
+    AuthenticatedOnboardedLinkedinRunIdRoute:
+      AuthenticatedOnboardedLinkedinRunIdRoute,
+  }
+
+const AuthenticatedOnboardedLinkedinRouteWithChildren =
+  AuthenticatedOnboardedLinkedinRoute._addFileChildren(
+    AuthenticatedOnboardedLinkedinRouteChildren,
+  )
+
+interface AuthenticatedOnboardedRouteChildren {
+  AuthenticatedOnboardedBrandRoute: typeof AuthenticatedOnboardedBrandRoute
+  AuthenticatedOnboardedBriefsRoute: typeof AuthenticatedOnboardedBriefsRoute
+  AuthenticatedOnboardedCalendarRoute: typeof AuthenticatedOnboardedCalendarRoute
+  AuthenticatedOnboardedCompetitorsRoute: typeof AuthenticatedOnboardedCompetitorsRoute
+  AuthenticatedOnboardedLinkedinRoute: typeof AuthenticatedOnboardedLinkedinRouteWithChildren
+  AuthenticatedOnboardedNotificationsRoute: typeof AuthenticatedOnboardedNotificationsRoute
+  AuthenticatedOnboardedOutliersRoute: typeof AuthenticatedOnboardedOutliersRoute
+  AuthenticatedOnboardedPersonalizeRoute: typeof AuthenticatedOnboardedPersonalizeRoute
+  AuthenticatedOnboardedSettingsRoute: typeof AuthenticatedOnboardedSettingsRoute
+  AuthenticatedOnboardedTodayRoute: typeof AuthenticatedOnboardedTodayRoute
+}
+
+const AuthenticatedOnboardedRouteChildren: AuthenticatedOnboardedRouteChildren =
+  {
+    AuthenticatedOnboardedBrandRoute: AuthenticatedOnboardedBrandRoute,
+    AuthenticatedOnboardedBriefsRoute: AuthenticatedOnboardedBriefsRoute,
+    AuthenticatedOnboardedCalendarRoute: AuthenticatedOnboardedCalendarRoute,
+    AuthenticatedOnboardedCompetitorsRoute:
+      AuthenticatedOnboardedCompetitorsRoute,
+    AuthenticatedOnboardedLinkedinRoute:
+      AuthenticatedOnboardedLinkedinRouteWithChildren,
+    AuthenticatedOnboardedNotificationsRoute:
+      AuthenticatedOnboardedNotificationsRoute,
+    AuthenticatedOnboardedOutliersRoute: AuthenticatedOnboardedOutliersRoute,
+    AuthenticatedOnboardedPersonalizeRoute:
+      AuthenticatedOnboardedPersonalizeRoute,
+    AuthenticatedOnboardedSettingsRoute: AuthenticatedOnboardedSettingsRoute,
+    AuthenticatedOnboardedTodayRoute: AuthenticatedOnboardedTodayRoute,
+  }
+
+const AuthenticatedOnboardedRouteWithChildren =
+  AuthenticatedOnboardedRoute._addFileChildren(
+    AuthenticatedOnboardedRouteChildren,
+  )
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedOnboardedRoute: typeof AuthenticatedOnboardedRouteWithChildren
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedOnboardedRoute: AuthenticatedOnboardedRouteWithChildren,
+  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminActivityRoute: typeof AdminActivityRoute
+  AdminAiCallsRoute: typeof AdminAiCallsRoute
+  AdminSystemRoute: typeof AdminSystemRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminActivityRoute: AdminActivityRoute,
+  AdminAiCallsRoute: AdminAiCallsRoute,
+  AdminSystemRoute: AdminSystemRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
+  BlueprintRoute: BlueprintRoute,
+  ContentAnalysisRoute: ContentAnalysisRoute,
+  ContentStudioRoute: ContentStudioRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LinkedinEngineRoute: LinkedinEngineRoute,
+  LoginRoute: LoginRoute,
+  PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SignupRoute: SignupRoute,
+  SuspendedRoute: SuspendedRoute,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

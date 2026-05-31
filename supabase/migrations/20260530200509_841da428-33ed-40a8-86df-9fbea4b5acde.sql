@@ -1,0 +1,3 @@
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_activity_log ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ai_call_log ENABLE ROW LEVEL SECURITY;
